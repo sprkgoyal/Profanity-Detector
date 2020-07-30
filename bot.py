@@ -9,15 +9,37 @@ abuse = set(['fuck', 'fucking', 'fucked', 'chut', 'chuchi', 'loda', 'lode', 'mad
          'bitch', 'fucker', 'motherfucker', 'sisterfucker', 'dick', 'vagina', 'tit',
          'tits', 'ass', 'asshole', 'cunt', 'mallu', 'boobs', 'boob', 'bbc', 'orgasm', 
          'kutta', 'kamina', 'kutiya', 'behenchod', 'bhenchod', 'benchod', 'chod', 'chudai', 'butt', 'buttocks',
-         'prostitute', 'chuda', 'chud', 'chudi', 'bc', 'mc', 'lund'])
+         'prostitute', 'chuda', 'chud', 'chudi', 'bc', 'mc', 'lund', 'bhosad', 'bhosda', 'randi', 'bsdk', 
+         'randikhana', 'lode', 'jhaat', 'assholes', 'moot', 'bhosdiwala', 'bosdiwala', 'bhosdiwale', 'bosdiwale',
+         'sex', 'pussy'])
 
 @client.event
 async def on_ready():
     print("Bot is Deployed.")
 
+@client.command()
+async def add(ctx, *, word):
+    global abuse
+    abuse.add(word.lower())
+    await ctx.send("Added a abuse in the Dictionary")
+
+@client.command()
+async def remove(ctx, *, word):
+    global abuse
+    abuse.remove(word.lower())
+    await ctx.send("Removed a abuse from the Dictionary")
+
+@client.command()
+async def ping(ctx):
+    await ctx.send("testing")
+
 @client.event
 async def on_message(message : discord.Message):
     if message.author == client.user:
+        return
+
+    if message.content.startswith(".add") or message.content.startswith(".remove"):
+        await client.process_commands(message)
         return
 
     words = message.content.split()
@@ -37,6 +59,6 @@ async def on_message(message : discord.Message):
                 except:
                     await message.channel.send("You have powers so you are safe else ...")
                 count_abuse[message.author] = 0
-            break
+            return
 
 client.run("NzM3OTc5MjA5MTYyNjg2NTQ0.XyFOsg.N8QLCWXI_VCXdjgFlw5yALf94oU")
