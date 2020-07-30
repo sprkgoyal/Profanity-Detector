@@ -3,6 +3,7 @@ from collections import defaultdict
 from discord.ext import commands
 
 count_abuse = defaultdict(lambda : 0)
+token = "TOKEN"
 
 client = commands.Bot(command_prefix = '.')
 abuse = set(['fuck', 'fucking', 'fucked', 'chut', 'chuchi', 'loda', 'lode', 'madarchod', 
@@ -56,7 +57,6 @@ async def on_message(message : discord.Message):
         for ch in word:
             if ch not in needed:
                 rem += ch
-        # words.remove(word)
         word = word.strip(rem)
         new_words.append(word)
 
@@ -73,8 +73,8 @@ async def on_message(message : discord.Message):
                 try:
                     await message.channel.guild.kick(message.author, reason = "Using Abusive Language")
                 except:
-                    await message.channel.send("I can't kick you right now, but be aware you will be kicked shortly...")
+                    await message.channel.send("I can't kick you right now, but you will be kicked shortly...")
                 count_abuse[message.author] = 0
             return
 
-client.run("NzM3OTc5MjA5MTYyNjg2NTQ0.XyFOsg.N8QLCWXI_VCXdjgFlw5yALf94oU")
+client.run(token)
