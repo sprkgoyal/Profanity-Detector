@@ -6,12 +6,19 @@ count_abuse = defaultdict(lambda : 0)
 
 client = commands.Bot(command_prefix = '.')
 abuse = set(['fuck', 'fucking', 'fucked', 'chut', 'chuchi', 'loda', 'lode', 'madarchod', 
-         'bitch', 'fucker', 'motherfucker', 'sisterfucker', 'dick', 'vagina', 'tit',
+         'bitch', 'fucker', 'motherfucker', 'sisterfucker', 'dick', 'vagina', 'tit', 'bhosad',
          'tits', 'ass', 'asshole', 'cunt', 'mallu', 'boobs', 'boob', 'bbc', 'orgasm', 
-         'kutta', 'kamina', 'kutiya', 'behenchod', 'bhenchod', 'benchod', 'chod', 'chudai', 'butt', 'buttocks',
+         'kutta', 'kamina', 'kutiya', 'behenchod', 'bhenchod', 'benchod', 'chudai', 'butt', 'buttocks',
          'prostitute', 'chuda', 'chud', 'chudi', 'bc', 'mc', 'lund', 'bhosad', 'bhosda', 'randi', 'bsdk', 
-         'randikhana', 'lode', 'jhaat', 'assholes', 'moot', 'bhosdiwala', 'bosdiwala', 'bhosdiwale', 'bosdiwale',
-         'sex', 'pussy'])
+         'randikhana', 'jhaat', 'assholes', 'bhosdiwala', 'bosdiwala', 'bhosdiwale', 'bosdiwale',
+         'sex', 'pussy', 'bhosdi', 'randwa', 'chodu', 'betichod', 'porn', 'xvideos', 'chutad', 'tmkc', 'mkb',
+         'chutiya', 'chutiye', 'gand', 'randirona', 'piss', 'raand', 'gandu', 'lodu', 'chamar', 'bakrichod',
+         'jhatu', 'jhaatu', 'tatte', 'tatta'])
+
+needed = set()
+for i in "qwertyuiopasdfghjklzxcvbnm0123456789":
+    needed.add(i)
+    needed.add(i.upper())
 
 @client.event
 async def on_ready():
@@ -43,8 +50,17 @@ async def on_message(message : discord.Message):
         return
 
     words = message.content.split()
-
+    new_words = []
     for word in words:
+        rem = ""
+        for ch in word:
+            if ch not in needed:
+                rem += ch
+        # words.remove(word)
+        word = word.strip(rem)
+        new_words.append(word)
+
+    for word in new_words:
         if word.lower() in abuse:
             await message.channel.send(f"{message.author}, your message contains abusive word(s)")
             count_abuse[message.author] += 1
