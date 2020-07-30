@@ -3,6 +3,7 @@ from collections import defaultdict
 from discord.ext import commands
 
 count_abuse = defaultdict(lambda : 0)
+token = "TOKEN"
 
 client = commands.Bot(command_prefix = '.')
 abuse = set(['fuck', 'fucking', 'fucked', 'chut', 'chuchi', 'loda', 'lode', 'madarchod', 
@@ -61,4 +62,4 @@ async def on_message(message : discord.Message):
                 count_abuse[message.author] = 0
             return
 
-client.run("NzM3OTc5MjA5MTYyNjg2NTQ0.XyFOsg.N8QLCWXI_VCXdjgFlw5yALf94oU")
+client.run(token)
