@@ -57,7 +57,7 @@ async def on_message(message : discord.Message):
                 try:
                     await message.channel.guild.kick(message.author, reason = "Using Abusive Language")
                 except:
-                    await message.channel.send("You have powers so you are safe else ...")
+                    await message.channel.send("I can't kick you right now, but you will be kicked shortly...")
                 count_abuse[message.author] = 0
             return
 
