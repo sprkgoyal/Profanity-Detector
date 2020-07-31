@@ -3,18 +3,13 @@ from collections import defaultdict
 from discord.ext import commands
 
 count_abuse = defaultdict(lambda : 0)
-token = "TOKEN"
+token = "NzM3OTc5MjA5MTYyNjg2NTQ0.XyFOsg.N8QLCWXI_VCXdjgFlw5yALf94oU"
 
 client = commands.Bot(command_prefix = '.')
-abuse = set(['fuck', 'fucking', 'fucked', 'chut', 'chuchi', 'loda', 'lode', 'madarchod', 
-         'bitch', 'fucker', 'motherfucker', 'sisterfucker', 'dick', 'vagina', 'tit', 'bhosad',
-         'tits', 'ass', 'asshole', 'cunt', 'mallu', 'boobs', 'boob', 'bbc', 'orgasm', 
-         'kutta', 'kamina', 'kutiya', 'behenchod', 'bhenchod', 'benchod', 'chudai', 'butt', 'buttocks',
-         'prostitute', 'chuda', 'chud', 'chudi', 'bc', 'mc', 'lund', 'bhosad', 'bhosda', 'randi', 'bsdk', 
-         'randikhana', 'jhaat', 'assholes', 'bhosdiwala', 'bosdiwala', 'bhosdiwale', 'bosdiwale',
-         'sex', 'pussy', 'bhosdi', 'randwa', 'chodu', 'betichod', 'porn', 'xvideos', 'chutad', 'tmkc', 'mkb',
-         'chutiya', 'chutiye', 'gand', 'randirona', 'piss', 'raand', 'gandu', 'lodu', 'chamar', 'bakrichod',
-         'jhatu', 'jhaatu', 'tatte', 'tatta'])
+abuse = set()
+abuse_file = open("list.txt", "r")
+for word in abuse_file:
+    abuse.add(word.replace("\n", ""))
 
 needed = set()
 for i in "qwertyuiopasdfghjklzxcvbnm0123456789":
@@ -26,20 +21,26 @@ async def on_ready():
     print("Bot is Deployed.")
 
 @client.command()
+# @commands.has_permissions(administrator = True)
 async def add(ctx, *, word):
     global abuse
-    abuse.add(word.lower())
+    if word not in abuse:
+        abuse.add(word.lower())
+        abuse_file = open("list.txt", "a")
+        abuse_file.write(f"{word.lower()}\n")
+        abuse_file.close()
     await ctx.send("Added a abuse in the Dictionary")
 
 @client.command()
+# @commands.has_permissions(administrator = True)
 async def remove(ctx, *, word):
     global abuse
     abuse.remove(word.lower())
     await ctx.send("Removed a abuse from the Dictionary")
-
-@client.command()
-async def ping(ctx):
-    await ctx.send("testing")
+    abuse_file = open("list.txt", "w")
+    for word in abuse:
+        abuse_file.write(f"{word}\n")
+    abuse_file.close()
 
 @client.event
 async def on_message(message : discord.Message):
@@ -47,7 +48,18 @@ async def on_message(message : discord.Message):
         return
 
     if message.content.startswith(".add") or message.content.startswith(".remove"):
-        await client.process_commands(message)
+        if "admin" in [mem.name.lower() for mem in message.author.roles]:
+            await client.process_commands(message)
+        else:
+            await message.channel.send("Only Admins can use this command")
+        return
+
+    if message.content == ".help":
+        await message.channel.send("""Hello there, and welcome to the help section of Abuse Detector
+
+There are only two commands available here and each command starts with '.' also called period
+1) add abusive_word, this adds abusive_word in the abuse dictionary for future detection
+2) remove word, this removes a word from the abuse dictionary""")
         return
 
     words = message.content.split()
