@@ -3,7 +3,7 @@ from collections import defaultdict
 from discord.ext import commands
 
 count_abuse = defaultdict(lambda : 0)
-token = "TOKEN"
+token = "NzM3OTc5MjA5MTYyNjg2NTQ0.XyFOsg.N8QLCWXI_VCXdjgFlw5yALf94oU"
 
 client = commands.Bot(command_prefix = '.')
 abuse = set(['fuck', 'fucking', 'fucked', 'chut', 'chuchi', 'loda', 'lode', 'madarchod', 
