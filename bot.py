@@ -21,7 +21,6 @@ async def on_ready():
     print("Bot is Deployed.")
 
 @client.command()
-# @commands.has_permissions(administrator = True)
 async def add(ctx, *, word):
     global abuse
     if word not in abuse:
@@ -32,7 +31,6 @@ async def add(ctx, *, word):
     await ctx.send("Added a abuse in the Dictionary")
 
 @client.command()
-# @commands.has_permissions(administrator = True)
 async def remove(ctx, *, word):
     global abuse
     abuse.remove(word.lower())
