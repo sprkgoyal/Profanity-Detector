@@ -1,9 +1,10 @@
 import discord
+import os
 from collections import defaultdict
 from discord.ext import commands
 
 count_abuse = defaultdict(lambda : 0)
-token = "NzM3OTc5MjA5MTYyNjg2NTQ0.XyFOsg.N8QLCWXI_VCXdjgFlw5yALf94oU"
+token = os.environ["BOT_TOKEN"]
 
 client = commands.Bot(command_prefix = '.')
 abuse = set()
