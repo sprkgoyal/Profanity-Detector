@@ -5,9 +5,10 @@ from datetime import datetime, timedelta
 from discord.ext import commands
 from math import ceil, floor
 
-count_abuse = defaultdict(lambda : [0, datetime.now()])
 token = os.environ["BOT_TOKEN"]
 time_limit = 60
+change_time = datetime.now()
+count_abuse = defaultdict(lambda : [0, datetime.now(), time_limit])
 
 client = commands.Bot(command_prefix = '.')
 abuse = set()
@@ -46,9 +47,11 @@ async def remove(ctx, *, word):
 
 @client.command()
 async def set(ctx, *, minutes):
-    global time_limit
+    global time_limit, change_time
     time_limit = int(minutes)
+    change_time = datetime.now()
     await ctx.send(f"Time Limit has been changed to {minutes} minutes")
+
 
 @client.event
 async def on_message(message : discord.Message):
@@ -66,9 +69,15 @@ async def on_message(message : discord.Message):
     if message.content == ".remaining":
         cur = datetime.now()
         prev = count_abuse[message.author][1]
-        if cur-prev < timedelta(minutes=time_limit) and count_abuse[message.author][0] > 0:
-            await message.channel.send(f"{message.author} has to wait {floor(time_limit - (cur - prev).total_seconds()/60)} minutes and {ceil(60 - (cur - prev).total_seconds()%60)} seconds until your count resets")
+        if cur - prev > timedelta(minutes=time_limit):
+            count_abuse[message.author][1] = change_time
+            prev = change_time
+        lim = min(count_abuse[message.author][2], time_limit)
+        count_abuse[message.author][2] = lim
+        if cur-prev < timedelta(minutes=lim) and count_abuse[message.author][0] > 0:
+            await message.channel.send(f"@{message.author} has to wait **{floor(lim - (cur - prev).total_seconds()/60)} Minutes and {ceil(60 - (cur - prev).total_seconds()%60)%60} Seconds** until your count resets")
         else:
+            count_abuse[message.author][0] = 0
             await message.channel.send("You are free to go man")
         return
 
@@ -98,12 +107,13 @@ There are only four commands available here and each command starts with '.' als
             if cur - count_abuse[message.author][1] >= timedelta(minutes=time_limit):
                 count_abuse[message.author][0] = 0
             count_abuse[message.author][1] = datetime.now()
-            await message.channel.send(f"{message.author}, your message contains abusive word(s)")
+            count_abuse[message.author][2] = time_limit
             count_abuse[message.author][0] += 1
+            await message.channel.send(f"@{message.author}, your message contains abusive word(s)")
             if count_abuse[message.author][0] == 1:
-                await message.channel.send(f"This is your first warning, if you abuse two more times then you will be kicked from this channel")
+                await message.channel.send(f"This is your **first** warning, if you abuse two more times then you will be kicked from this channel")
             elif count_abuse[message.author][0] == 2:
-                await message.channel.send(f"This is your second warning, if you abuse one more time then you will be kicked from this channel")
+                await message.channel.send(f"This is your **second** warning, if you abuse one more time then you will be kicked from this channel")
             else:
                 await message.channel.send(f"That's it, you crossed the limit so you are kicked from the server")
                 try:
